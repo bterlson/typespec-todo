@@ -207,10 +207,28 @@ namespace TodoItems {
   }
 
   @list op list(...PaginationControls): TodoPage;
+
+  // openapi is incorrect here, can only upload url attachments via JSON
   @post op create(
     @header contentType: "multipart/form-data" | "application/json",
     item: TodoItem,
     attachments: TodoAttachment[],
+  ): TodoItem | InvalidTodoItem;
+
+  @overload(create)
+  @post
+  op createJson(
+    @header contentType: "application/json",
+    item: TodoItem,
+    attachments: TodoUrlAttachment[],
+  ): TodoItem | InvalidTodoItem;
+
+  @overload(create)
+  @post
+  op createForm(
+    @header contentType: "multipart/form-data",
+    item: TodoItem,
+    attachments: TodoUrlAttachment[],
   ): TodoItem | InvalidTodoItem;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
