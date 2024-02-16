@@ -397,8 +397,11 @@ components:
           type: string
           description: A longer description of the todo item in markdown format
         status:
-          allOf:
-            - $ref: '#/components/schemas/TodoItemStatus'
+          type: string
+          enum:
+            - NotStarted
+            - InProgress
+            - Completed
           description: The status of the todo item
         createdAt:
           type: string
@@ -419,12 +422,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TodoLabel'
-    TodoItemStatus:
-      type: string
-      enum:
-        - NotStarted
-        - InProgress
-        - Completed
     TodoItems.InvalidTodoItem:
       type: object
       allOf:
@@ -445,49 +442,57 @@ components:
           type: string
           description: A longer description of the todo item in markdown format
         status:
-          allOf:
-            - $ref: '#/components/schemas/TodoItemStatus'
+          type: string
+          enum:
+            - NotStarted
+            - InProgress
+            - Completed
           description: The status of the todo item
     TodoItems.TodoPage:
       type: object
       required:
         - items
-        - pageSize
-        - totalSize
-        - limit
-        - offset
+        - pagination
       properties:
         items:
           type: array
           items:
             $ref: '#/components/schemas/TodoItem'
           description: The items in the page
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of items returned in this page
-        totalSize:
-          type: integer
-          format: int32
-          description: The total number of items
-        limit:
-          type: integer
-          format: int32
-          description: The limit to the number of items
-          default: 50
-        offset:
-          type: integer
-          format: int32
-          description: The offset to start paginating at
-          default: 0
-        prevLink:
-          type: string
-          format: uri
-          description: A link to the previous page, if it exists
-        nextLink:
-          type: string
-          format: uri
-          description: A link to the next page, if it exists
+        pagination:
+          type: object
+          properties:
+            pageSize:
+              type: integer
+              format: int32
+              description: The number of items returned in this page
+            totalSize:
+              type: integer
+              format: int32
+              description: The total number of items
+            limit:
+              type: integer
+              format: int32
+              description: The limit to the number of items
+              default: 50
+            offset:
+              type: integer
+              format: int32
+              description: The offset to start paginating at
+              default: 0
+            prevLink:
+              type: string
+              format: uri
+              description: A link to the previous page, if it exists
+            nextLink:
+              type: string
+              format: uri
+              description: A link to the next page, if it exists
+          required:
+            - pageSize
+            - totalSize
+            - limit
+            - offset
     TodoLabel:
       anyOf:
         - type: string
