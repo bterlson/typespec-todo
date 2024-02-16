@@ -41,7 +41,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TodoItems.TodoPage'
     post:
-      operationId: TodoItems_create
+      operationId: TodoItems_createForm
       parameters: []
       responses:
         '200':
@@ -66,25 +66,10 @@ paths:
                 item:
                   $ref: '#/components/schemas/TodoItem'
                 attachments:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/TodoAttachment'
+                  type: string
+                  format: binary
               required:
                 - item
-                - attachments
-          application/json:
-            schema:
-              type: object
-              properties:
-                item:
-                  $ref: '#/components/schemas/TodoItem'
-                attachments:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/TodoAttachment'
-              required:
-                - item
-                - attachments
   /items/{id}:
     get:
       operationId: TodoItems_get
@@ -165,7 +150,7 @@ paths:
         '404':
           description: The server cannot find the requested resource.
     post:
-      operationId: Attachments_create
+      operationId: Attachments_createUrlAttachment_Attachments_createFileAttachment
       parameters:
         - name: itemId
           in: path
@@ -179,44 +164,24 @@ paths:
         '404':
           description: The server cannot find the requested resource.
       requestBody:
-        required: true
         content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                contents:
-                  anyOf:
-                    - type: string
-                      format: byte
-                    - $ref: '#/components/schemas/TodoUrlAttachment'
-              required:
-                - contents
           application/json:
             schema:
               type: object
               properties:
                 contents:
-                  anyOf:
-                    - type: string
-                      format: byte
-                    - $ref: '#/components/schemas/TodoUrlAttachment'
+                  $ref: '#/components/schemas/TodoUrlAttachment'
               required:
                 - contents
-    delete:
-      operationId: Attachments_delete
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: The request has succeeded.
-        '404':
-          description: The server cannot find the requested resource.
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                contents:
+                  type: string
+                  format: binary
+              required:
+                - contents
   /login:
     post:
       operationId: Users_login

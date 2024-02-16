@@ -208,14 +208,7 @@ namespace TodoItems {
 
   @list op list(...PaginationControls): TodoPage;
 
-  // openapi is incorrect here, can only upload url attachments via JSON
-  @post op create(
-    @header contentType: "multipart/form-data" | "application/json",
-    item: TodoItem,
-    attachments: TodoAttachment[],
-  ): TodoItem | InvalidTodoItem;
-
-  @overload(create)
+  @sharedRoute
   @post
   op createJson(
     @header contentType: "application/json",
@@ -223,16 +216,20 @@ namespace TodoItems {
     attachments: TodoUrlAttachment[],
   ): TodoItem | InvalidTodoItem;
 
-  @overload(create)
+  @sharedRoute
   @post
   op createForm(
     @header contentType: "multipart/form-data",
     item: TodoItem,
-    attachments: TodoUrlAttachment[],
+    attachments?: (TodoUrlAttachment | bytes)[],
   ): TodoItem | InvalidTodoItem;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
-  @patch op update(@path id: TodoItem.id, patch: TodoItemPatch): TodoItem;
+  @patch op update(
+    @header contentType: "application/merge-patch+json",
+    @path id: TodoItem.id,
+    patch: TodoItemPatch,
+  ): TodoItem;
   @delete op delete(@path id: TodoItem.id): OkResponse | NotFoundResponse;
 
   @route("{itemId}/attachments")
@@ -241,16 +238,7 @@ namespace TodoItems {
       @path itemId: TodoItem.id,
     ): TodoAttachment[] | NotFoundResponse;
 
-    // OpenAPI uses this signature, but I really wish it wouldn't.
-    // The intent is that you can only upload file attachments with MFD
-    // and url attachments with JSON.
-    @post op create(
-      @header contentType: "multipart/form-data" | "application/json",
-      @path itemId: TodoItem.id,
-      contents: bytes | TodoUrlAttachment,
-    ): OkResponse | NotFoundResponse;
-
-    @overload(create)
+    @sharedRoute
     @post
     op createUrlAttachment(
       @header contentType: "application/json",
@@ -258,7 +246,7 @@ namespace TodoItems {
       contents: TodoUrlAttachment,
     ): OkResponse | NotFoundResponse;
 
-    @overload(create)
+    @sharedRoute
     @post
     op createFileAttachment(
       @header contentType: "multipart/form-data",
