@@ -50,7 +50,7 @@ model TodoItem {
   description: string;
 
   /** The status of the todo item */
-  status: TodoItemStatus;
+  status: "NotStarted" | "InProgress" | "Completed";
 
   /** When the todo item was created. */
   @visibility("read") createdAt: utcDateTime;
@@ -106,12 +106,6 @@ model TodoFileAttachment {
 
   /** The url where the attachment can be downloaded from */
   url: url;
-}
-
-enum TodoItemStatus {
-  NotStarted,
-  InProgress,
-  Completed,
 }
 
 @error
