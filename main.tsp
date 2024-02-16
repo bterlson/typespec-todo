@@ -62,7 +62,20 @@ model TodoItem {
   @visibility("read") completedAt: utcDateTime;
 }
 
-model TodoAttachment {
+union TodoAttachment {
+  file: TodoFileAttachment,
+  url: TodoUrlAttachment,
+}
+
+model TodoUrlAttachment {
+  /** A description of the URL */
+  description: string;
+
+  /** The url */
+  url: url;
+}
+
+model TodoFileAttachment {
   /** The todo item this is attached to */
   todoItemId: TodoItem.id;
 
@@ -194,7 +207,12 @@ namespace TodoItems {
   }
 
   @list op list(...PaginationControls): TodoPage;
-  @post op create(item: TodoItem): TodoItem | InvalidTodoItem;
+  @post op create(
+    @header contentType: "multipart/form-data" | "application/json",
+    item: TodoItem,
+    attachments: TodoAttachment[],
+  ): TodoItem | InvalidTodoItem;
+
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
   @patch op update(@path id: TodoItem.id, patch: TodoItemPatch): TodoItem;
   @delete op delete(@path id: TodoItem.id): OkResponse | NotFoundResponse;
@@ -204,11 +222,32 @@ namespace TodoItems {
     @list op list(
       @path itemId: TodoItem.id,
     ): TodoAttachment[] | NotFoundResponse;
+
+    // OpenAPI uses this signature, but I really wish it wouldn't.
+    // The intent is that you can only upload file attachments with MFD
+    // and url attachments with JSON.
     @post op create(
+      @header contentType: "multipart/form-data" | "application/json",
+      @path itemId: TodoItem.id,
+      contents: bytes | TodoUrlAttachment,
+    ): OkResponse | NotFoundResponse;
+
+    @overload(create)
+    @post
+    op createUrlAttachment(
+      @header contentType: "application/json",
+      @path itemId: TodoItem.id,
+      contents: TodoUrlAttachment,
+    ): OkResponse | NotFoundResponse;
+
+    @overload(create)
+    @post
+    op createFileAttachment(
       @header contentType: "multipart/form-data",
       @path itemId: TodoItem.id,
-      file: bytes,
+      contents: bytes,
     ): OkResponse | NotFoundResponse;
+
     @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
   }
 }

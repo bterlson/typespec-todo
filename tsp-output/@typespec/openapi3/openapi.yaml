@@ -59,14 +59,32 @@ paths:
       requestBody:
         required: true
         content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/TodoItem'
+                attachments:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TodoAttachment'
+              required:
+                - item
+                - attachments
           application/json:
             schema:
               type: object
               properties:
                 item:
                   $ref: '#/components/schemas/TodoItem'
+                attachments:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TodoAttachment'
               required:
                 - item
+                - attachments
   /items/{id}:
     get:
       operationId: TodoItems_get
@@ -167,11 +185,24 @@ paths:
             schema:
               type: object
               properties:
-                file:
-                  type: string
-                  format: binary
+                contents:
+                  anyOf:
+                    - type: string
+                      format: byte
+                    - $ref: '#/components/schemas/TodoUrlAttachment'
               required:
-                - file
+                - contents
+          application/json:
+            schema:
+              type: object
+              properties:
+                contents:
+                  anyOf:
+                    - type: string
+                      format: byte
+                    - $ref: '#/components/schemas/TodoUrlAttachment'
+              required:
+                - contents
     delete:
       operationId: Attachments_delete
       parameters:
@@ -323,6 +354,10 @@ components:
           type: string
           description: A human readable message
     TodoAttachment:
+      anyOf:
+        - $ref: '#/components/schemas/TodoFileAttachment'
+        - $ref: '#/components/schemas/TodoUrlAttachment'
+    TodoFileAttachment:
       type: object
       required:
         - todoItemId
@@ -467,6 +502,19 @@ components:
           type: string
           format: uri
           description: A link to the next page, if it exists
+    TodoUrlAttachment:
+      type: object
+      required:
+        - description
+        - url
+      properties:
+        description:
+          type: string
+          description: A description of the URL
+        url:
+          type: string
+          format: uri
+          description: The url
     User:
       type: object
       required:
