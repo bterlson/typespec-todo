@@ -41,7 +41,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TodoItems.TodoPage'
     post:
-      operationId: TodoItems_createForm
+      operationId: TodoItems_createJson_TodoItems_createForm
       parameters: []
       responses:
         '200':
@@ -57,8 +57,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/TodoItems.InvalidTodoItem'
       requestBody:
-        required: true
         content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/TodoItem'
+                attachments:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TodoUrlAttachment'
+              required:
+                - item
+                - attachments
           multipart/form-data:
             schema:
               type: object
@@ -66,8 +78,12 @@ paths:
                 item:
                   $ref: '#/components/schemas/TodoItem'
                 attachments:
-                  type: string
-                  format: binary
+                  type: array
+                  items:
+                    anyOf:
+                      - $ref: '#/components/schemas/TodoUrlAttachment'
+                      - type: string
+                        format: byte
               required:
                 - item
   /items/{id}:
@@ -108,7 +124,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/merge-patch+json:
             schema:
               type: object
               properties:
@@ -357,6 +373,7 @@ components:
         - createdAt
         - updatedAt
         - completedAt
+        - labels
       properties:
         id:
           type: integer
@@ -398,6 +415,10 @@ components:
           format: date-time
           description: When the todo item was makred as completed
           readOnly: true
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodoLabel'
     TodoItemStatus:
       type: string
       enum:
@@ -467,6 +488,26 @@ components:
           type: string
           format: uri
           description: A link to the next page, if it exists
+    TodoLabel:
+      anyOf:
+        - type: string
+        - type: array
+          items:
+            type: string
+        - $ref: '#/components/schemas/TodoLabelRecord'
+        - type: array
+          items:
+            $ref: '#/components/schemas/TodoLabelRecord'
+    TodoLabelRecord:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+          format: ^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$
     TodoUrlAttachment:
       type: object
       required:

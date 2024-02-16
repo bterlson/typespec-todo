@@ -60,6 +60,24 @@ model TodoItem {
 
   /** When the todo item was makred as completed */
   @visibility("read") completedAt: utcDateTime;
+
+  // Want the read form to be normalized to TodoLabelRecord[], but can't
+  // https://github.com/microsoft/typespec/issues/2926
+  labels: TodoLabel[];
+}
+
+union TodoLabel {
+  string,
+  string[],
+  TodoLabelRecord,
+  TodoLabelRecord[],
+}
+
+model TodoLabelRecord {
+  name: string;
+
+  @format("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+  color?: string;
 }
 
 union TodoAttachment {
@@ -254,6 +272,7 @@ namespace TodoItems {
       contents: bytes,
     ): OkResponse | NotFoundResponse;
 
-    @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
+    // disabled: https://github.com/microsoft/typespec/issues/2925
+    // @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
   }
 }
