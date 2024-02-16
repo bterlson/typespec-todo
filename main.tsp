@@ -184,19 +184,21 @@ namespace TodoItems {
     /** The items in the page */
     items: TodoItem[];
 
-    /** The number of items returned in this page */
-    pageSize: int32;
+    pagination: {
+      /** The number of items returned in this page */
+      pageSize: int32;
 
-    /** The total number of items */
-    totalSize: int32;
+      /** The total number of items */
+      totalSize: int32;
 
-    ...PaginationControls;
+      ...PaginationControls;
 
-    /** A link to the previous page, if it exists */
-    prevLink?: url;
+      /** A link to the previous page, if it exists */
+      prevLink?: url;
 
-    /** A link to the next page, if it exists */
-    nextLink?: url;
+      /** A link to the next page, if it exists */
+      nextLink?: url;
+    };
   }
 
   // deeply annoying that I have to copy/paste this...
@@ -211,7 +213,7 @@ namespace TodoItems {
     description?: TodoItem.description;
 
     /** The status of the todo item */
-    status?: TodoItemStatus;
+    status?: "NotStarted" | "InProgress" | "Completed";
   }
 
   model InvalidTodoItem extends Error {
