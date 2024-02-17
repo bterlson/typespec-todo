@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
+import "@typespec/openapi";
 
 using Http;
 
@@ -95,7 +96,7 @@ model TodoUrlAttachment {
 
 model TodoFileAttachment {
   /** The todo item this is attached to */
-  todoItemId: TodoItem.id;
+  @visibility("read") todoItemId: TodoItem.id;
 
   /** The file name of the attachment */
   @maxLength(255)
@@ -105,11 +106,14 @@ model TodoFileAttachment {
   mediaType: string;
 
   /** The url where the attachment can be downloaded from */
-  url: url;
+  @visibility("read") url: url;
+
+  /** The contents of the file */
+  @visibility("create") contents: bytes;
 }
 
 @error
-model Error {
+model ApiError {
   /** A machine readable error code */
   code: string;
 
@@ -130,12 +134,12 @@ namespace Users {
   }
 
   /** The user already exists */
-  model UserExistsResponse extends Error {
+  model UserExistsResponse extends ApiError {
     ...ConflictResponse;
   }
 
   /** The user is invalid (e.g. forgot to enter email address) */
-  model InvalidUserResponse extends Error {
+  model InvalidUserResponse extends ApiError {
     @statusCode statusCode: 422;
   }
 
@@ -216,7 +220,7 @@ namespace TodoItems {
     status?: "NotStarted" | "InProgress" | "Completed";
   }
 
-  model InvalidTodoItem extends Error {
+  model InvalidTodoItem extends ApiError {
     @statusCode statusCode: 422;
   }
 
@@ -227,7 +231,7 @@ namespace TodoItems {
   op createJson(
     @header contentType: "application/json",
     item: TodoItem,
-    attachments: TodoUrlAttachment[],
+    attachments: TodoAttachment[],
   ): TodoItem | InvalidTodoItem;
 
   @sharedRoute
@@ -257,7 +261,7 @@ namespace TodoItems {
     op createUrlAttachment(
       @header contentType: "application/json",
       @path itemId: TodoItem.id,
-      contents: TodoUrlAttachment,
+      contents: TodoAttachment,
     ): OkResponse | NotFoundResponse;
 
     @sharedRoute

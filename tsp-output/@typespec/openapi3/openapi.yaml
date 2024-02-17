@@ -67,7 +67,7 @@ paths:
                 attachments:
                   type: array
                   items:
-                    $ref: '#/components/schemas/TodoUrlAttachment'
+                    $ref: '#/components/schemas/TodoAttachmentCreateItem'
               required:
                 - item
                 - attachments
@@ -186,7 +186,7 @@ paths:
               type: object
               properties:
                 contents:
-                  $ref: '#/components/schemas/TodoUrlAttachment'
+                  $ref: '#/components/schemas/TodoAttachmentCreate'
               required:
                 - contents
           multipart/form-data:
@@ -322,7 +322,7 @@ components:
         format: int32
         default: 0
   schemas:
-    Error:
+    ApiError:
       type: object
       required:
         - code
@@ -338,6 +338,14 @@ components:
       anyOf:
         - $ref: '#/components/schemas/TodoFileAttachment'
         - $ref: '#/components/schemas/TodoUrlAttachment'
+    TodoAttachmentCreate:
+      anyOf:
+        - $ref: '#/components/schemas/TodoFileAttachmentCreate'
+        - $ref: '#/components/schemas/TodoUrlAttachment'
+    TodoAttachmentCreateItem:
+      anyOf:
+        - $ref: '#/components/schemas/TodoFileAttachmentCreateItem'
+        - $ref: '#/components/schemas/TodoUrlAttachment'
     TodoFileAttachment:
       type: object
       required:
@@ -350,6 +358,7 @@ components:
           type: integer
           format: int64
           description: The todo item this is attached to
+          readOnly: true
         filename:
           type: string
           maxLength: 255
@@ -361,6 +370,43 @@ components:
           type: string
           format: uri
           description: The url where the attachment can be downloaded from
+          readOnly: true
+    TodoFileAttachmentCreate:
+      type: object
+      required:
+        - filename
+        - mediaType
+        - contents
+      properties:
+        filename:
+          type: string
+          maxLength: 255
+          description: The file name of the attachment
+        mediaType:
+          type: string
+          description: The media type of the attachment
+        contents:
+          type: string
+          format: byte
+          description: The contents of the file
+    TodoFileAttachmentCreateItem:
+      type: object
+      required:
+        - filename
+        - mediaType
+        - contents
+      properties:
+        filename:
+          type: string
+          maxLength: 255
+          description: The file name of the attachment
+        mediaType:
+          type: string
+          description: The media type of the attachment
+        contents:
+          type: string
+          format: byte
+          description: The contents of the file
     TodoItem:
       type: object
       required:
@@ -425,7 +471,7 @@ components:
     TodoItems.InvalidTodoItem:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Error'
+        - $ref: '#/components/schemas/ApiError'
     TodoItems.TodoItemPatch:
       type: object
       properties:
@@ -549,7 +595,7 @@ components:
     Users.InvalidUserResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Error'
+        - $ref: '#/components/schemas/ApiError'
       description: The user is invalid (e.g. forgot to enter email address)
     Users.UserCreatedResponse:
       type: object
@@ -578,7 +624,7 @@ components:
     Users.UserExistsResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Error'
+        - $ref: '#/components/schemas/ApiError'
       description: The user already exists
   securitySchemes:
     BearerAuth:
