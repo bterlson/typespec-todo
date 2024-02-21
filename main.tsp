@@ -45,10 +45,10 @@ model TodoItem {
   @visibility("read") createdBy: User.id;
 
   /** User that the todo is assigned to */
-  ownedBy: User.id;
+  assignedTo?: User.id;
 
   /** A longer description of the todo item in markdown format */
-  description: string;
+  description?: string;
 
   /** The status of the todo item */
   status: "NotStarted" | "InProgress" | "Completed";
@@ -211,10 +211,10 @@ namespace TodoItems {
     title?: TodoItem.title;
 
     /** User that the todo is assigned to */
-    ownedBy?: TodoItem.ownedBy;
+    assignedTo?: TodoItem.assignedTo | null;
 
     /** A longer description of the todo item in markdown format */
-    description?: TodoItem.description;
+    description?: TodoItem.description | null;
 
     /** The status of the todo item */
     status?: "NotStarted" | "InProgress" | "Completed";

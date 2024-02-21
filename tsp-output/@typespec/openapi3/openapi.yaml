@@ -413,8 +413,6 @@ components:
         - id
         - title
         - createdBy
-        - ownedBy
-        - description
         - status
         - createdAt
         - updatedAt
@@ -434,7 +432,7 @@ components:
           format: int64
           description: User that created the todo
           readOnly: true
-        ownedBy:
+        assignedTo:
           type: integer
           format: int64
           description: User that the todo is assigned to
@@ -479,14 +477,16 @@ components:
           type: string
           maxLength: 255
           description: The item's title
-        ownedBy:
+        assignedTo:
           type: integer
           format: int64
           description: User that the todo is assigned to
           readOnly: true
+          nullable: true
         description:
           type: string
           description: A longer description of the todo item in markdown format
+          nullable: true
         status:
           type: string
           enum:
