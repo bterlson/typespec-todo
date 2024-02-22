@@ -118,8 +118,32 @@ model ApiError {
   code: string;
 
   /** A human readable message */
+  // https://github.com/microsoft/OpenAPI/blob/main/extensions/x-ms-primary-error-message.md
+  @OpenAPI.extension("x-ms-primary-error-message", true)
   message: string;
 }
+
+/**
+ * Something is wrong with you.
+ */
+model Standard4XXResponse extends ApiError {
+  @minValue(400)
+  @maxValue(499)
+  @statusCode
+  statusCode: int32;
+}
+
+/**
+ * Something is wrong with me.
+ */
+model Standard5XXResponse extends ApiError {
+  @minValue(500)
+  @maxValue(599)
+  @statusCode
+  statusCode: int32;
+}
+
+alias WithStandardErrors<T> = T | Standard4XXResponse | Standard5XXResponse;
 
 namespace Users {
   // would prefer to extend
@@ -147,18 +171,20 @@ namespace Users {
   @post
   op create(
     user: User,
-  ): UserCreatedResponse | UserExistsResponse | InvalidUserResponse;
+  ): WithStandardErrors<UserCreatedResponse | UserExistsResponse | InvalidUserResponse>;
 
   @route("validate")
   @get
-  op validate(@query token: string): OkResponse | InvalidUserResponse;
+  op validate(
+    @query token: string,
+  ): WithStandardErrors<NoContentResponse | InvalidUserResponse>;
 
   @route("login")
   @post
   op login(
     username: User.username,
     password: User.password,
-  ): OkResponse | UnauthorizedResponse;
+  ): WithStandardErrors<NoContentResponse | UnauthorizedResponse>;
 
   @route("logout")
   @get
@@ -167,11 +193,15 @@ namespace Users {
   /** Sends a reset token to the user's email address */
   @route("forgot-password")
   @post
-  op forgotPassword(email: User.email): OkResponse | NotFoundResponse;
+  op forgotPassword(
+    email: User.email,
+  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 
   @route("reset-password")
   @get
-  op resetPassword(@query resetToken: string): OkResponse | NotFoundResponse;
+  op resetPassword(
+    @query resetToken: string,
+  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 }
 
 @route("items")
@@ -224,7 +254,7 @@ namespace TodoItems {
     @statusCode statusCode: 422;
   }
 
-  @list op list(...PaginationControls): TodoPage;
+  @list op list(...PaginationControls): WithStandardErrors<TodoPage>;
 
   @sharedRoute
   @post
@@ -232,7 +262,7 @@ namespace TodoItems {
     @header contentType: "application/json",
     item: TodoItem,
     attachments: TodoAttachment[],
-  ): TodoItem | InvalidTodoItem;
+  ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
   @sharedRoute
   @post
@@ -240,7 +270,7 @@ namespace TodoItems {
     @header contentType: "multipart/form-data",
     item: TodoItem,
     attachments?: (TodoUrlAttachment | bytes)[],
-  ): TodoItem | InvalidTodoItem;
+  ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
   @patch op update(
@@ -248,13 +278,15 @@ namespace TodoItems {
     @path id: TodoItem.id,
     patch: TodoItemPatch,
   ): TodoItem;
-  @delete op delete(@path id: TodoItem.id): OkResponse | NotFoundResponse;
+  @delete op delete(
+    @path id: TodoItem.id,
+  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 
   @route("{itemId}/attachments")
   namespace Attachments {
     @list op list(
       @path itemId: TodoItem.id,
-    ): TodoAttachment[] | NotFoundResponse;
+    ): WithStandardErrors<TodoAttachment[] | NotFoundResponse>;
 
     @sharedRoute
     @post
@@ -262,7 +294,7 @@ namespace TodoItems {
       @header contentType: "application/json",
       @path itemId: TodoItem.id,
       contents: TodoAttachment,
-    ): OkResponse | NotFoundResponse;
+    ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 
     @sharedRoute
     @post
@@ -270,7 +302,7 @@ namespace TodoItems {
       @header contentType: "multipart/form-data",
       @path itemId: TodoItem.id,
       contents: bytes,
-    ): OkResponse | NotFoundResponse;
+    ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 
     // disabled: https://github.com/microsoft/typespec/issues/2925
     // @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
