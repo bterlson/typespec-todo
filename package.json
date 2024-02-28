@@ -2,11 +2,25 @@
   "name": "typespec-todo",
   "version": "0.1.0",
   "type": "module",
+  "scripts": {
+    "build": "tsp compile . && json2ts -i tsp-output/@typespec/json-schema -o src/types --no-additionalProperties --cwd tsp-output/@typespec/json-schema --enableConstEnums && tsc -p ."
+  },
   "dependencies": {
+    "@fastify/multipart": "^8.1.0",
+    "@fastify/swagger": "^8.14.0",
+    "@scalar/fastify-api-reference": "^1.17.6",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
+    "@typespec/json-schema": "^0.53.1",
+    "@typespec/openapi3": "latest",
     "@typespec/rest": "latest",
-    "@typespec/openapi3": "latest"
+    "fastify": "^4.26.1",
+    "fastify-openapi-glue": "^4.4.3"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@nestjs/cli": "^10.3.2",
+    "json-schema-to-typescript": "^13.1.2",
+    "typescript": "^5.3.3"
+  }
 }

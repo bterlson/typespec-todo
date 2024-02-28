@@ -1,2 +1,6 @@
 emit:
   - "@typespec/openapi3"
+  - "@typespec/json-schema"
+options:
+  "@typespec/json-schema":
+    file-type: "json"

@@ -300,6 +300,7 @@ paths:
               properties:
                 username:
                   type: string
+                  minLength: 2
                   maxLength: 50
                   description: The user's username
                 password:
@@ -383,12 +384,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                user:
-                  $ref: '#/components/schemas/User'
-              required:
-                - user
+              $ref: '#/components/schemas/User'
   /validate:
     get:
       operationId: Users_validate
@@ -426,7 +422,7 @@ components:
     TodoItems.PaginationControls.limit:
       name: limit
       in: query
-      required: true
+      required: false
       description: The limit to the number of items
       schema:
         type: integer
@@ -435,7 +431,7 @@ components:
     TodoItems.PaginationControls.offset:
       name: offset
       in: query
-      required: true
+      required: false
       description: The offset to start paginating at
       schema:
         type: integer
@@ -547,7 +543,6 @@ components:
         - status
         - createdAt
         - updatedAt
-        - completedAt
         - labels
       properties:
         id:
@@ -594,9 +589,7 @@ components:
           description: When the todo item was makred as completed
           readOnly: true
         labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/TodoLabel'
+          $ref: '#/components/schemas/TodoLabels'
     TodoItems.InvalidTodoItem:
       type: object
       allOf:
@@ -668,18 +661,6 @@ components:
           required:
             - pageSize
             - totalSize
-            - limit
-            - offset
-    TodoLabel:
-      anyOf:
-        - type: string
-        - type: array
-          items:
-            type: string
-        - $ref: '#/components/schemas/TodoLabelRecord'
-        - type: array
-          items:
-            $ref: '#/components/schemas/TodoLabelRecord'
     TodoLabelRecord:
       type: object
       required:
@@ -689,7 +670,17 @@ components:
           type: string
         color:
           type: string
-          format: ^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$
+          pattern: ^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$
+    TodoLabels:
+      anyOf:
+        - type: string
+        - type: array
+          items:
+            type: string
+        - $ref: '#/components/schemas/TodoLabelRecord'
+        - type: array
+          items:
+            $ref: '#/components/schemas/TodoLabelRecord'
     TodoUrlAttachment:
       type: object
       required:
@@ -712,6 +703,7 @@ components:
       properties:
         username:
           type: string
+          minLength: 2
           maxLength: 50
           description: The user's username
         email:
@@ -725,6 +717,13 @@ components:
             but is otherwise not visible (and hashed by the backend)
     Users.InvalidUserResponse:
       type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          enum:
+            - invalid-user
       allOf:
         - $ref: '#/components/schemas/ApiError'
       description: The user is invalid (e.g. forgot to enter email address)
@@ -743,6 +742,7 @@ components:
           readOnly: true
         username:
           type: string
+          minLength: 2
           maxLength: 50
           description: The user's username
         email:
@@ -754,6 +754,13 @@ components:
           description: The token to use to construct the validate email address url
     Users.UserExistsResponse:
       type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          enum:
+            - user-exists
       allOf:
         - $ref: '#/components/schemas/ApiError'
       description: The user already exists

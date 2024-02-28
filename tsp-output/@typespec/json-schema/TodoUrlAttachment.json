@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "TodoUrlAttachment.json",
+    "type": "object",
+    "properties": {
+        "description": {
+            "type": "string",
+            "description": "A description of the URL"
+        },
+        "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The url"
+        }
+    },
+    "required": [
+        "description",
+        "url"
+    ]
+}
