@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build": "tsp compile . && json2ts -i tsp-output/@typespec/json-schema -o src/types --no-additionalProperties --cwd tsp-output/@typespec/json-schema --enableConstEnums && tsc -p ."
+    "build": "tsp compile . && json2ts -i tsp-output/@typespec/json-schema -o src/types --no-additionalProperties --cwd tsp-output/@typespec/json-schema --enableConstEnums && tsc -p .",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@fastify/multipart": "^8.1.0",
