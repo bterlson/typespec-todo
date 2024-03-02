@@ -22,6 +22,7 @@ options:
     generateMetadata: true
     branded: false
     azureSdkForJs: false
+    generateSample: true
     packageDetails:
       name: "todo-client"
       description: "Todo client package"

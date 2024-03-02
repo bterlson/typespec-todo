@@ -6,6 +6,14 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
+tsp-output/@typespec
+tsp-output/java
+tsp-output/python
+tsp-output/typescript/dist-esm
+tsp-output/typescript/dist-test
+tsp-output/typescript/temp
+tsp-output/typescript/types
+tsp-output/typescript/package-lock.json
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
