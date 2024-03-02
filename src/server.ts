@@ -45,8 +45,14 @@ fastify.addContentTypeParser(
  */
 fastify.setErrorHandler((error, req, res) => {
   if (error.validation) {
-    const code = (req.routeOptions.schema.response as any)["422"].properties.code.enum[0];
-    
+    let code;
+    // todo: clean this up!
+    try {
+      code = (req.routeOptions.schema.response as any)["422"].properties.code.enum[0];
+    } catch (e: any) {
+      code = error.code;
+    }
+
     switch (code) {
       case "invalid-user":
         res.status(422).send({
@@ -54,9 +60,20 @@ fastify.setErrorHandler((error, req, res) => {
           message: error.validationContext + error.validation[0].instancePath + " " + error.validation[0].message ?? "The user is invalid",
         });
         return;
-
     }
+
+    res.status(422).send({
+      code: code ?? "serialization-error",
+      message: error.validationContext + error.validation[0].instancePath + " " + error.validation[0].message ?? "The object is invalid"
+    })
+    return;
   }
+
+  res.status(500).send({
+    code: "server-error",
+    message: error.message
+  })
+
   throw error;
 });
 

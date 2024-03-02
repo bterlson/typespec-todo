@@ -27,7 +27,7 @@ model User {
   username: string;
 
   /** The user's email address */
-  @format("email")
+  // @format("email") - crashes emitters for now
   email: string;
 
   /**
@@ -44,7 +44,7 @@ model User {
 @jsonSchema
 model TodoItem {
   /** The item's unique id */
-  @key id: safeint;
+  @visibility("read") @key id: safeint;
 
   /** The item's title */
   @maxLength(255)
@@ -73,7 +73,11 @@ model TodoItem {
 
   // Want the read form to be normalized to TodoLabelRecord[], but can't
   // https://github.com/microsoft/typespec/issues/2926
-  labels: TodoLabels;
+  labels?: TodoLabels;
+
+  // hack to get a different schema for create
+  // (fastify glue doesn't support readonly)
+  @visibility("create") _dummy?: string;
 }
 
 @jsonSchema
@@ -272,14 +276,18 @@ namespace TodoItems {
 
   @list op list(...PaginationControls): WithStandardErrors<TodoPage>;
 
+  // want to be able to control the operation id of the shared route
+  // (no concat logic).
   @sharedRoute
+  @OpenAPI.operationId("TodoItems")
   @post
   op createJson(
     @header contentType: "application/json",
     item: TodoItem,
-    attachments: TodoAttachment[],
+    attachments?: TodoAttachment[],
   ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
+  @OpenAPI.operationId("create")
   @sharedRoute
   @post
   op createForm(

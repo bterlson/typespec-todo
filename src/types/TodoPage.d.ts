@@ -76,7 +76,8 @@ export interface TodoItemJson {
    * When the todo item was makred as completed
    */
   completedAt?: string;
-  labels: TodoLabelsJson;
+  labels?: TodoLabelsJson;
+  _dummy?: string;
 }
 export interface TodoLabelRecordJson {
   name: string;

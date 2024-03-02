@@ -1,10 +1,12 @@
 import { UserJson as User } from "./types/User.js";
 import { TodoItemJson as TodoItem } from "./types/TodoItem.js";
 import { TodoPageJson as TodoPage } from "./types/TodoPage.js";
+import { TodoAttachmentJson as TodoAttachment } from "./types/TodoAttachment.js";
 import { PaginationControlsJson as PaginationControls } from "./types/PaginationControls.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserCreatedResponseJson } from "./types/UserCreatedResponse.js";
 import { randomBytes } from "node:crypto";
+
 
 const DEFAULT_LIMIT = 10;
 
@@ -43,6 +45,7 @@ function throwError(code: string, message: string): never {
   (error as any).code = code;
   throw error;
 }
+
 export class Service {
   async Users_create(req: FastifyRequest<{ Body: User }>) {
     const user = req.body;
@@ -135,6 +138,19 @@ export class Service {
   }
 
   async TodoItems_create(req: FastifyRequest) {
+    console.log("Here!");
+    if (req.isMultipart()) {
+      console.log("Is multipart request");
+    } else {
+      const body: { item: TodoItem, attachments?: TodoAttachment[] } = req.body as any;
+      const { item, attachments } = body;
 
+      item.id = database.items.size;
+      item.createdAt = new Date().toISOString();
+      item.updatedAt = new Date().toISOString();
+      item.createdBy = 1; // todo: implement users
+      database.items.set(item.id, item)
+      return item;
+    }
   }
 }
