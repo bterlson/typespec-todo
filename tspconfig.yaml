@@ -8,15 +8,15 @@ options:
   "@typespec/json-schema":
     file-type: "json"
   "@azure-tools/typespec-python":
-    package-pprint-name: "Brian Fun Service"
-    package-dir: "brian-fun-service"
-    package-name: "{package-dir}"
+    emitter-output-dir: "{output-dir}/python"
     unbranded: true
   "@azure-tools/typespec-java":
+    emitter-output-dir: "{output-dir}/java"
     package-dir: "brian-fun-service"
     namespace: "com.brian.fun.service"
     branded: false
   "@azure-tools/typespec-ts":
+    emitter-output-dir: "{output-dir}/javascript"
     title: "Brian Fun Service"
     package-dir: "brian-fun-service"
     generateMetadata: true
