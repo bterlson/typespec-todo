@@ -2,7 +2,7 @@
 
 import { getClient, ClientOptions } from "@typespec/ts-http-runtime";
 import { KeyCredential } from "@typespec/ts-http-runtime";
-import { TodoApplicationClient } from "./clientDefinitions.js";
+import { TodoApplicationClient } from "./clientDefinitions";
 
 /**
  * Initialize a new instance of `TodoApplicationClient`

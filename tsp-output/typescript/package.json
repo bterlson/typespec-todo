@@ -6,9 +6,8 @@
   "description": "Todo client package",
   "keywords": ["node", "azure", "cloud", "typescript", "browser", "isomorphic"],
   "license": "MIT",
-  "type": "module",
   "main": "dist/index.js",
-  "module": "./dist-esm/src/index.js",
+  "module": "./dist-esm/index.js",
   "types": "./types/todo-client.d.ts",
   "repository": "github:Azure/azure-sdk-for-js",
   "bugs": { "url": "https://github.com/Azure/azure-sdk-for-js/issues" },
@@ -27,11 +26,11 @@
     "build:samples": "echo skipped.",
     "build:test": "echo skipped.",
     "build:debug": "echo skipped.",
-    "check-format": "prettier --list-different --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\"  \"samples-dev/**/*.ts\"",
+    "check-format": "prettier --list-different --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\" ",
     "clean": "rimraf --glob dist dist-browser dist-esm test-dist temp types *.tgz *.log",
     "execute:samples": "echo skipped",
     "extract-api": "rimraf review && mkdirp ./review && api-extractor run --local",
-    "format": "prettier --write --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\"  \"samples-dev/**/*.ts\"",
+    "format": "prettier --write --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"*.{js,json}\" ",
     "generate:client": "echo skipped",
     "integration-test:browser": "echo skipped",
     "integration-test:node": "echo skipped",
@@ -72,11 +71,5 @@
     "rollup": "^2.66.1",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "uglify-js": "^3.4.9"
-  },
-  "//sampleConfiguration": {
-    "productName": "Todo App",
-    "productSlugs": ["azure"],
-    "disableDocsMs": true,
-    "apiRefLink": "https://docs.microsoft.com/javascript/api/todo-client?view=azure-node-preview"
   }
 }
