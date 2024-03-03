@@ -1,7 +1,7 @@
 // Licensed under the MIT license.
 
 import { RequestParameters } from "@typespec/ts-http-runtime";
-import { User, TodoItem, TodoAttachment, TodoItemPatch, TodoUrlAttachment } from "./models";
+import { User, TodoItem, TodoAttachment, TodoItemPatch, TodoUrlAttachment } from "./models.js";
 
 export interface UsersCreateBodyParam {
   body: User;

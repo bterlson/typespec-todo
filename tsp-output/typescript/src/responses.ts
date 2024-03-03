@@ -9,7 +9,7 @@ import {
   TodoPageOutput,
   TodoItemOutput,
   TodoAttachmentOutput,
-} from "./outputModels";
+} from "./outputModels.js";
 
 /** The request has succeeded. */
 export interface UsersCreate200Response extends HttpResponse {

@@ -6,15 +6,17 @@
   "description": "Todo client package",
   "keywords": ["node", "azure", "cloud", "typescript", "browser", "isomorphic"],
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "./dist-esm/index.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "./dist-esm/src/index.js",
   "types": "./types/todo-client.d.ts",
   "repository": "github:Azure/azure-sdk-for-js",
   "bugs": { "url": "https://github.com/Azure/azure-sdk-for-js/issues" },
   "files": [
     "dist/",
-    "dist-esm/",
+    "dist-esm/src",
     "types/todo-client.d.ts",
+    "types/src",
     "README.md",
     "LICENSE",
     "review/*"
@@ -44,8 +46,7 @@
     "unit-test": "echo skipped",
     "unit-test:node": "echo skipped",
     "unit-test:browser": "echo skipped",
-    "build": "npm run clean && tsc && rollup -c 2>&1 && npm run minify && mkdirp ./review && npm run extract-api",
-    "minify": "uglifyjs -c -m --comments --source-map \"content='./dist/index.js.map'\" -o ./dist/index.min.js ./dist/index.js"
+    "build": "npm run clean && tsc && rollup -c 2>&1 && mkdirp ./review && npm run extract-api"
   },
   "sideEffects": false,
   "autoPublish": false,

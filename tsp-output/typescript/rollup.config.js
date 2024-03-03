@@ -100,9 +100,9 @@ export function makeConfig(pkg, options) {
       ...Object.keys(pkg.dependencies),
       ...Object.keys(pkg.devDependencies),
     ],
-    output: { file: "dist/index.js", format: "cjs", sourcemap: true },
+    output: { file: "dist/index.cjs", format: "cjs", sourcemap: true },
     preserveSymlinks: false,
-    plugins: [sourcemaps(), nodeResolve()],
+    plugins: [cjs(), sourcemaps(), nodeResolve()],
   };
 
   const config = [baseConfig];
