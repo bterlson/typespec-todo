@@ -16,10 +16,10 @@ options:
     namespace: "com.brian.fun.service"
     branded: false
   "@azure-tools/typespec-ts":
-    emitter-output-dir: "{output-dir}/typescript"
+    emitter-output-dir: "{output-dir}/../samples/typescript/lib"
     title: "Todo Application"
     package-dir: "todo-client"
-    generateMetadata: true
+    generateMetadata: false
     branded: false
     azureSdkForJs: false
     packageDetails:

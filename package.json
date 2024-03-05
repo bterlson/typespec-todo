@@ -18,13 +18,17 @@
     "@typespec/json-schema": "^0.53.1",
     "@typespec/openapi3": "latest",
     "@typespec/rest": "latest",
+    "@typespec/ts-http-runtime": "1.0.0-alpha.20240228.1",
     "fastify": "^4.26.1",
-    "fastify-openapi-glue": "^4.4.3"
+    "fastify-openapi-glue": "^4.4.3",
+    "yargs": "^17.7.2"
   },
   "private": true,
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
+    "@types/yargs": "^17.0.32",
     "json-schema-to-typescript": "^13.1.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 }

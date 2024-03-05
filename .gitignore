@@ -1,3 +1,7 @@
+tsp-output/
+dist/
+node_modules/
+samples/typescript/lib
 # Logs
 logs
 *.log
