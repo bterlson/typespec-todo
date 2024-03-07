@@ -21,12 +21,14 @@ interface Database {
   users: Map<number, User>;
   items: Map<number, TodoItem>;
   tokens: Map<string, User>;
+  attachmentsByItem: Map<string, number>;
 }
 
 const database: Database = {
   users: new Map(),
   items: new Map(),
-  tokens: new Map()
+  tokens: new Map(),
+  attachmentsByItem: new Map()
 };
 for (let i = 0; i < 100; i++) {
   database.items.set(i, {
@@ -138,9 +140,11 @@ export class Service {
   }
 
   async TodoItems_create(req: FastifyRequest) {
-    console.log("Here!");
     if (req.isMultipart()) {
-      console.log("Is multipart request");
+      const parts = req.parts();
+      for await (const part of parts) {
+        console.log(part);
+      }
     } else {
       const body: { item: TodoItem, attachments?: TodoAttachment[] } = req.body as any;
       const { item, attachments } = body;

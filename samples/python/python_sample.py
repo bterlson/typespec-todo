@@ -8,7 +8,7 @@ from todo.models import TodoItem, TodoUrlAttachment
 client = TodoClient(ServiceKeyCredential("token"), endpoint='http://localhost:3000')
 
 
-result_item = client.todo_items.create_json(
+result_item = client.todo_items.create_form(
     item=TodoItem(
         id=str(uuid.uuid4()),
         title="title",

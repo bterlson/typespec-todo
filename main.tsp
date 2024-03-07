@@ -10,9 +10,13 @@ using JsonSchema;
 @service({
   title: "Todo App",
 })
-@useAuth(BearerAuth)
+@useAuth(BearerAuth | ApiKeyAuth<ApiKeyLocation.cookie, "session-id">)
 @jsonSchema
 namespace Todo;
+
+// should not be necessary, bug here in tsp.
+@encode("binary")
+scalar myBytes extends bytes;
 
 @jsonSchema
 model User {
@@ -163,6 +167,7 @@ model Standard5XXResponse extends ApiError {
 
 alias WithStandardErrors<T> = T | Standard4XXResponse | Standard5XXResponse;
 
+@useAuth(NoAuth)
 namespace Users {
   // would prefer to extend
   // https://github.com/microsoft/typespec/issues/2922
@@ -292,15 +297,15 @@ namespace TodoItems {
   @post
   op createForm(
     @header contentType: "multipart/form-data",
-    item: TodoItem,
-    attachments?: (TodoUrlAttachment | bytes)[],
+    ...TodoItem,
+    attachments?: (TodoUrlAttachment | myBytes)[],
   ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
   @patch op update(
     @header contentType: "application/merge-patch+json",
     @path id: TodoItem.id,
-    patch: TodoItemPatch,
+    @body patch: TodoItemPatch,
   ): TodoItem;
   @delete op delete(
     @path id: TodoItem.id,
