@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import TodoClient from "./lib";
-import { paginate } from "./paginate";
+import TodoClient from "./generated-client/src/index.js";
+import { paginate } from "./paginate.js";
 
 // Example client setup, adjust according to your client library
 const todoClient = TodoClient(
   "http://localhost:3000",
-  {
-    key: "my-secret-key",
-  },
+
   { allowInsecureConnection: true }
 );
 
@@ -68,12 +66,14 @@ yargs(hideBin(process.argv))
       try {
         const response = await todoClient.path("/items").post({
           contentType: "application/json",
-          body: {
+          body: {       
             item: {
               title: argv.title,
               description: argv.description,
               status: argv.status,
+              labels: []
             },
+            attachments: []
           },
         });
 
@@ -106,7 +106,7 @@ yargs(hideBin(process.argv))
       try {
         const response = await todoClient.path("/items/{id}", argv.id).patch({
           contentType: "application/merge-patch+json",
-          body: { patch: { status: argv.status } },
+          body: { status: argv.status },
         });
         if (response.status !== "200") {
           console.error("Failed to update TODO item:", response.status);

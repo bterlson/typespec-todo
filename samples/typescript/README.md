@@ -14,45 +14,18 @@ This is a CLI (Command Line Interface) application for managing your TODOs. It a
 Before you start, ensure you have the following installed:
 
 - Node.js (version 18.x or newer recommended)
-- [tsx](https://github.com/privatenumber/tsx) for executing TypeScript files directly
-
-## Installation
-
-To use the TODO CLI application, follow these steps:
-
-1. Install the required dependencies:
-
-```bash
-npm install
-```
-
-2. Build the project
-
-```bash
-npm run build
-```
-
-3. Start the TODO service
-
-```bash
-npm start
-```
+- The client code generated, and the service started. See the readme in the root of this repository for more information.
 
 ## Usage
 
-After installation, you can run the application using `tsx` followed by the script name, for example:
-
-**From root**
+From this folder, run:
 
 ```bash
-npx tsx ./samples/typescript/index.ts --help
+npm install
+npm run build
 ```
 
-**From this folder**
-
-```bash
-npx tsx index.ts --help
-```
+The cli is now located at `dist/index.js`.
 
 ### Commands
 
@@ -61,7 +34,7 @@ npx tsx index.ts --help
   To list all TODO items, use:
 
   ```bash
-  npx tsx index.ts list
+  node dist/index.js list
   ```
 
 - **Add a TODO**
@@ -69,7 +42,7 @@ npx tsx index.ts --help
   To add a new TODO item, use:
 
   ```bash
-  npx tsx index.ts add "<title>" [status] [description]
+  node dist/index.js add "<title>" [status] [description]
   ```
 
   Status is optional and can be one of `NotStarted`, `InProgress`, or `Completed`. The default status is `NotStarted`.
@@ -79,7 +52,7 @@ npx tsx index.ts --help
   To update an existing TODO item's status, use:
 
   ```bash
-  npx tsx index.ts update <id> <status>
+  node dist/index.js update <id> <status>
   ```
 
 - **Delete a TODO**
@@ -87,5 +60,5 @@ npx tsx index.ts --help
   To delete a TODO item, use:
 
   ```bash
-  npx tsx index.ts delete <id>
+  node dist/index.js delete <id>
   ```

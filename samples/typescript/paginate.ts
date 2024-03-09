@@ -1,6 +1,6 @@
-import { TodoItemsList200Response, TodoApplicationClient } from "./lib";
+import { TodoItemsList200Response, TodoClient } from "./generated-client/src";
 
-export async function* paginate(client: TodoApplicationClient, initialResponse: TodoItemsList200Response) {
+export async function* paginate(client: TodoClient, initialResponse: TodoItemsList200Response) {
   let currentResponse = initialResponse;
 
   // Yield items from the initial response first

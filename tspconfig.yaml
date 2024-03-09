@@ -16,5 +16,5 @@ options:
   "@azure-tools/typespec-csharp":
     emitter-output-dir: "{output-dir}/csharp"
   "@azure-tools/typespec-ts":
-    emitter-output-dir: "{output-dir}/typescript"
+    emitter-output-dir: "{project-root}/samples/typescript/generated-client"
     generateMetadata: false
