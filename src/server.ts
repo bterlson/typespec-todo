@@ -3,6 +3,8 @@ import fastifyMultipart from "@fastify/multipart";
 import fastifyOpenapiGlue from "fastify-openapi-glue";
 import fastifySwagger from "@fastify/swagger";
 import fastifyReference from "@scalar/fastify-api-reference";
+import pug from "pug";
+
 import { Service } from "./service.js";
 const localFile = (fileName: string) =>
   new URL(fileName, import.meta.url).pathname;
@@ -16,7 +18,9 @@ const pluginOptions = {
 const fastify = Fastify({
   logger: true,
 });
-fastify.register(fastifyMultipart);
+fastify.register(fastifyMultipart, {
+  attachFieldsToBody: true
+});
 fastify.register(fastifyOpenapiGlue, pluginOptions);
 fastify.register(fastifySwagger, {
   mode: "static",
@@ -25,6 +29,10 @@ fastify.register(fastifySwagger, {
     baseDir: "tsp-output/@typespec/openapi3",
   },
 });
+fastify.get("/", async (req, res) => {
+  const template = pug.compileFile("src/views/index.pug");
+  res.type("text/html").send(template());
+})
 fastify.register(fastifyReference, { routePrefix: "/ref" });
 fastify.addContentTypeParser(
   "application/merge-patch+json",

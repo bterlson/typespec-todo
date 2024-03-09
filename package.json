@@ -7,28 +7,31 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@azure-tools/typespec-java": "0.13.5",
-    "@azure-tools/typespec-python": "0.21.0",
-    "@azure-tools/typespec-ts": "0.23.0",
+    "@azure-tools/typespec-java": "latest",
+    "@azure-tools/typespec-python": "latest",
+    "@azure-tools/typespec-ts": "latest",
+    "@azure-tools/typespec-csharp": "latest",
     "@fastify/multipart": "^8.1.0",
     "@fastify/swagger": "^8.14.0",
     "@scalar/fastify-api-reference": "^1.17.6",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
-    "@typespec/json-schema": "^0.53.1",
+    "@typespec/json-schema": "latest",
+    "@typespec/openapi": "latest",
     "@typespec/openapi3": "latest",
     "@typespec/rest": "latest",
-    "@typespec/ts-http-runtime": "1.0.0-alpha.20240228.1",
     "fastify": "^4.26.1",
-    "fastify-openapi-glue": "^4.4.3",
-    "yargs": "^17.7.2"
+    "fastify-openapi-glue": "^4.4.3"
+  },
+  "overrides" : {
+    "@azure-tools/typespec-client-generator-core": "0.40.0"
   },
   "private": true,
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
-    "@types/yargs": "^17.0.32",
+    "@types/pug": "^2.0.10",
     "json-schema-to-typescript": "^13.1.2",
-    "tsx": "^4.7.1",
+    "pug": "^3.0.2",
     "typescript": "^5.3.3"
   }
 }
