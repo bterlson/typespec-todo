@@ -203,30 +203,6 @@ namespace Users {
   op validate(
     @query token: string,
   ): WithStandardErrors<NoContentResponse | InvalidUserResponse>;
-
-  @route("login")
-  @post
-  op login(
-    username: User.username,
-    password: User.password,
-  ): WithStandardErrors<NoContentResponse | UnauthorizedResponse>;
-
-  @route("logout")
-  @get
-  op logout(): OkResponse;
-
-  /** Sends a reset token to the user's email address */
-  @route("forgot-password")
-  @post
-  op forgotPassword(
-    email: User.email,
-  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-  @route("reset-password")
-  @get
-  op resetPassword(
-    @query resetToken: string,
-  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 }
 
 @route("items")
@@ -281,24 +257,11 @@ namespace TodoItems {
 
   @list op list(...PaginationControls): WithStandardErrors<TodoPage>;
 
-  // want to be able to control the operation id of the shared route
-  // (no concat logic).
-  @sharedRoute
-  @OpenAPI.operationId("TodoItems")
   @post
-  op createJson(
+  op create(
     @header contentType: "application/json",
     item: TodoItem,
     attachments?: TodoAttachment[],
-  ): WithStandardErrors<TodoItem | InvalidTodoItem>;
-
-  @OpenAPI.operationId("create")
-  @sharedRoute
-  @post
-  op createForm(
-    @header contentType: "multipart/form-data",
-    ...TodoItem,
-    attachments?: (TodoUrlAttachment | myBytes)[],
   ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
@@ -325,15 +288,6 @@ namespace TodoItems {
       contents: TodoAttachment,
     ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 
-    @sharedRoute
-    @post
-    op createFileAttachment(
-      @header contentType: "multipart/form-data",
-      @path itemId: TodoItem.id,
-      contents: bytes,
-    ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-    // disabled: https://github.com/microsoft/typespec/issues/2925
-    // @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
+    @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
   }
 }

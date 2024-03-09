@@ -17,3 +17,4 @@ options:
     emitter-output-dir: "{output-dir}/csharp"
   "@azure-tools/typespec-ts":
     emitter-output-dir: "{output-dir}/typescript"
+    generateMetadata: false
