@@ -24,7 +24,7 @@ user = client.users.create(
 
 assert user.username == "lmazuel"
 
-result_item = client.todo_items.create_json(
+result_item = client.todo_items.create(
     item=TodoItem(
         id=str(uuid.uuid4()),
         title="title",
