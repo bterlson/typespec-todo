@@ -41,3 +41,5 @@ result_item = client.todo_items.create_json(
 )
 
 assert result_item.title == "title"
+
+print(result_item)
