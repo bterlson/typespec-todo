@@ -72,6 +72,13 @@ fastify.setErrorHandler((error, req, res) => {
     return;
   }
 
+  if (error.code === "item-not-found") {
+    res.status(404).send({
+      code: error.code,
+      message: error.message
+   
+    });
+  }
   res.status(500).send({
     code: "server-error",
     message: error.message

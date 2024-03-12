@@ -3,7 +3,6 @@ import "@typespec/rest";
 import "@typespec/openapi3";
 import "@typespec/openapi";
 import "@typespec/json-schema";
-
 using Http;
 using JsonSchema;
 
@@ -112,9 +111,6 @@ model TodoUrlAttachment {
 
 @jsonSchema
 model TodoFileAttachment {
-  /** The todo item this is attached to */
-  @visibility("read") todoItemId: TodoItem.id;
-
   /** The file name of the attachment */
   @maxLength(255)
   filename: string;
@@ -122,11 +118,8 @@ model TodoFileAttachment {
   /** The media type of the attachment */
   mediaType: string;
 
-  /** The url where the attachment can be downloaded from */
-  @visibility("read") url: url;
-
   /** The contents of the file */
-  @visibility("create") contents: bytes;
+  contents: bytes;
 }
 
 @jsonSchema
@@ -193,12 +186,6 @@ namespace Users {
   op create(
     @body user: User,
   ): WithStandardErrors<UserCreatedResponse | UserExistsResponse | InvalidUserResponse>;
-
-  @route("validate")
-  @get
-  op validate(
-    @query token: string,
-  ): WithStandardErrors<NoContentResponse | InvalidUserResponse>;
 }
 
 @route("items")
@@ -278,12 +265,9 @@ namespace TodoItems {
 
     @sharedRoute
     @post
-    op createUrlAttachment(
-      @header contentType: "application/json",
+    op createAttachment(
       @path itemId: TodoItem.id,
-      contents: TodoAttachment,
+      @body contents: TodoAttachment,
     ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-    @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
   }
 }

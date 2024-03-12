@@ -9,10 +9,6 @@ export type TodoAttachmentJson = TodoFileAttachmentJson | TodoUrlAttachmentJson;
 
 export interface TodoFileAttachmentJson {
   /**
-   * The todo item this is attached to
-   */
-  todoItemId: number;
-  /**
    * The file name of the attachment
    */
   filename: string;
@@ -20,10 +16,6 @@ export interface TodoFileAttachmentJson {
    * The media type of the attachment
    */
   mediaType: string;
-  /**
-   * The url where the attachment can be downloaded from
-   */
-  url: string;
   /**
    * The contents of the file
    */

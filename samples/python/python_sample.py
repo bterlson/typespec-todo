@@ -13,22 +13,10 @@ client = TodoClient(
     endpoint='http://localhost:3000',
 )
 
-user = client.users.create(
-    user=User(
-        id=str(uuid.uuid4()),
-        username="lmazuel",
-        password="password",
-        email="me@you.com",
-    )
-)
-
-assert user.username == "lmazuel"
-
 result_item = client.todo_items.create(
     item=TodoItem(
         id=str(uuid.uuid4()),
         title="title",
-        created_by=user.id,
         status="NotStarted",
         labels=["label1", "label2"],
     ),
