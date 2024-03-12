@@ -14,7 +14,8 @@ import com.todo.models.User;
 import com.todo.models.UserCreatedResponse;
 
 /**
- * Sample code to demonstrate the use of ToDo APIs by demonstrating a simple scenario of creating a user, creating a
+ * Sample code to demonstrate the use of ToDo APIs by demonstrating a simple
+ * scenario of creating a user, creating a
  * todo item, updating the todo item and attaching a receipt to the todo item.
  */
 public class TodoSample {
@@ -24,7 +25,7 @@ public class TodoSample {
 
         // Configure the builder with endpoint and credential
         TodoClientBuilder clientBuilder = new TodoClientBuilder()
-                .endpoint("https://localhost:3000")
+                .endpoint("http://localhost:3000")
                 .credential(keyCredential);
 
         // Create a user client to manage users
@@ -42,11 +43,13 @@ public class TodoSample {
                 .setAssignedTo(user.getId());
 
         TodoItem createdTodoItem = todoItemsClient.create(todoItem);
-        System.out.println("Todo item with id " + createdTodoItem.getId() + " was created at " + createdTodoItem.getCreatedAt() + " by " + createdTodoItem.getCreatedBy());
+        System.out.println("Todo item with id " + createdTodoItem.getId() + " was created at "
+                + createdTodoItem.getCreatedAt() + " by " + createdTodoItem.getCreatedBy());
 
         // Get a todo item
         TodoItem getTodoItem = todoItemsClient.get(createdTodoItem.getId());
-        System.out.println("Retrieved todo item with title " + getTodoItem.getTitle() + " and status " + getTodoItem.getStatus());
+        System.out.println(
+                "Retrieved todo item with title " + getTodoItem.getTitle() + " and status " + getTodoItem.getStatus());
 
         // Update a todo item
         todoItemsClient.update(getTodoItem.getId(), new TodoItemPatch().setStatus(TodoItemPatchStatus.COMPLETED));
