@@ -64,7 +64,7 @@ public class TodoSample {
                         final String url = "https://sample.com/receipts/car-maintenance";
                 });
 
-                todoItemsAttachmentsClient.createUrlAttachment(getTodoItem.getId(), attachment);
+                todoItemsAttachmentsClient.createAttachment(getTodoItem.getId(), attachment);
                 System.out.println("Successfully attached the receipt to car maintenance todo item");
 
         }
