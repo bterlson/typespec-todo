@@ -7,10 +7,9 @@ import fastifyReference from "@scalar/fastify-api-reference";
 import { Service } from "./service.js";
 const localFile = (fileName: string) =>
   new URL(fileName, import.meta.url).pathname;
-
 const serviceHandlers = new Service();
 const pluginOptions = {
-  specification: localFile("../tsp-output/@typespec/openapi3/openapi.yaml"),
+  specification: "./tsp-output/@typespec/openapi3/openapi.yaml",
   serviceHandlers,
 };
 
