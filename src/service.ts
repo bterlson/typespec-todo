@@ -1,12 +1,13 @@
 import { UserJson as User } from "./types/User.js";
 import { TodoItemJson as TodoItem } from "./types/TodoItem.js";
 import { TodoPageJson as TodoPage } from "./types/TodoPage.js";
+import { TodoItemPatchJson as TodoItemPatch } from "./types/TodoItemPatch.js";
 import { TodoAttachmentJson as TodoAttachment } from "./types/TodoAttachment.js";
 import { PaginationControlsJson as PaginationControls } from "./types/PaginationControls.js";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserCreatedResponseJson } from "./types/UserCreatedResponse.js";
 import { randomBytes } from "node:crypto";
-
+import { apply } from "json-merge-patch";
 
 const DEFAULT_LIMIT = 10;
 
@@ -21,12 +22,14 @@ interface Database {
   users: Map<number, User>;
   items: Map<number, TodoItem>;
   tokens: Map<string, User>;
+  attachmentsByItem: Map<number, TodoAttachment[]>;
 }
 
 const database: Database = {
   users: new Map(),
   items: new Map(),
-  tokens: new Map()
+  tokens: new Map(),
+  attachmentsByItem: new Map()
 };
 for (let i = 0; i < 100; i++) {
   database.items.set(i, {
@@ -138,19 +141,65 @@ export class Service {
   }
 
   async TodoItems_create(req: FastifyRequest) {
-    console.log("Here!");
-    if (req.isMultipart()) {
-      console.log("Is multipart request");
-    } else {
-      const body: { item: TodoItem, attachments?: TodoAttachment[] } = req.body as any;
-      const { item, attachments } = body;
+    const body: { item: TodoItem, attachments?: TodoAttachment[] } = req.body as any;
+    const { item, attachments } = body;
 
-      item.id = database.items.size;
-      item.createdAt = new Date().toISOString();
-      item.updatedAt = new Date().toISOString();
-      item.createdBy = 1; // todo: implement users
-      database.items.set(item.id, item)
-      return item;
+    item.id = database.items.size;
+    item.createdAt = new Date().toISOString();
+    item.updatedAt = new Date().toISOString();
+    item.createdBy = 1; // todo: implement users
+    database.items.set(item.id, item)
+    return item;
+  }
+
+  async TodoItems_get(req: FastifyRequest<{ Params: { id: number } }>) {
+    const id = Number(req.params.id);
+    const todoItem = database.items.get(id);
+
+    if (!todoItem) {
+      throwError(
+        "item-not-found",
+        "User was not found"
+      );
     }
+
+    return todoItem;
+  }
+
+  async TodoItems_update(req: FastifyRequest<{ Params: { id: number } }>) {
+    const patch = req.body as TodoItemPatch;
+    const id = Number(req.params.id);
+    const todoItem = database.items.get(id);
+
+    if (!todoItem) {
+      throwError(
+        "item-not-found",
+        "Todo item was not found"
+      );
+    }
+
+    apply(todoItem, patch);
+
+    return todoItem;
+  }
+
+  async Attachments_list(req: FastifyRequest<{ Params: { itemId: number } }>) {
+    console.log([...database.attachmentsByItem.entries()]);
+    const items = database.attachmentsByItem.get(Number(req.params.itemId));
+    
+    return items ?? [];
+  }
+
+  async Attachments_createAttachment(req: FastifyRequest<{ Params: { itemId: number } }>) {
+    const id = Number(req.params.itemId);
+    if (!database.attachmentsByItem.has(id)) {
+      database.attachmentsByItem.set(id, []);
+    }
+
+    const list = database.attachmentsByItem.get(id)!;
+    const attachment: TodoAttachment = req.body as any;
+    list.push(attachment as TodoAttachment);
+    console.log("List is", list);
+    return;
   }
 }

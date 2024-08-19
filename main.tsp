@@ -3,14 +3,13 @@ import "@typespec/rest";
 import "@typespec/openapi3";
 import "@typespec/openapi";
 import "@typespec/json-schema";
-
 using Http;
 using JsonSchema;
 
 @service({
   title: "Todo App",
 })
-@useAuth(BearerAuth)
+@useAuth(BearerAuth | ApiKeyAuth<ApiKeyLocation.cookie, "session-id">)
 @jsonSchema
 namespace Todo;
 
@@ -112,9 +111,6 @@ model TodoUrlAttachment {
 
 @jsonSchema
 model TodoFileAttachment {
-  /** The todo item this is attached to */
-  @visibility("read") todoItemId: TodoItem.id;
-
   /** The file name of the attachment */
   @maxLength(255)
   filename: string;
@@ -122,11 +118,8 @@ model TodoFileAttachment {
   /** The media type of the attachment */
   mediaType: string;
 
-  /** The url where the attachment can be downloaded from */
-  @visibility("read") url: url;
-
   /** The contents of the file */
-  @visibility("create") contents: bytes;
+  contents: bytes;
 }
 
 @jsonSchema
@@ -163,6 +156,7 @@ model Standard5XXResponse extends ApiError {
 
 alias WithStandardErrors<T> = T | Standard4XXResponse | Standard5XXResponse;
 
+@useAuth(NoAuth)
 namespace Users {
   // would prefer to extend
   // https://github.com/microsoft/typespec/issues/2922
@@ -192,36 +186,6 @@ namespace Users {
   op create(
     @body user: User,
   ): WithStandardErrors<UserCreatedResponse | UserExistsResponse | InvalidUserResponse>;
-
-  @route("validate")
-  @get
-  op validate(
-    @query token: string,
-  ): WithStandardErrors<NoContentResponse | InvalidUserResponse>;
-
-  @route("login")
-  @post
-  op login(
-    username: User.username,
-    password: User.password,
-  ): WithStandardErrors<NoContentResponse | UnauthorizedResponse>;
-
-  @route("logout")
-  @get
-  op logout(): OkResponse;
-
-  /** Sends a reset token to the user's email address */
-  @route("forgot-password")
-  @post
-  op forgotPassword(
-    email: User.email,
-  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-  @route("reset-password")
-  @get
-  op resetPassword(
-    @query resetToken: string,
-  ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
 }
 
 @route("items")
@@ -276,31 +240,18 @@ namespace TodoItems {
 
   @list op list(...PaginationControls): WithStandardErrors<TodoPage>;
 
-  // want to be able to control the operation id of the shared route
-  // (no concat logic).
-  @sharedRoute
-  @OpenAPI.operationId("TodoItems")
   @post
-  op createJson(
+  op create(
     @header contentType: "application/json",
     item: TodoItem,
     attachments?: TodoAttachment[],
-  ): WithStandardErrors<TodoItem | InvalidTodoItem>;
-
-  @OpenAPI.operationId("create")
-  @sharedRoute
-  @post
-  op createForm(
-    @header contentType: "multipart/form-data",
-    item: TodoItem,
-    attachments?: (TodoUrlAttachment | bytes)[],
   ): WithStandardErrors<TodoItem | InvalidTodoItem>;
 
   @get op get(@path id: TodoItem.id): TodoItem | NotFoundResponse;
   @patch op update(
     @header contentType: "application/merge-patch+json",
     @path id: TodoItem.id,
-    patch: TodoItemPatch,
+    @body patch: TodoItemPatch,
   ): TodoItem;
   @delete op delete(
     @path id: TodoItem.id,
@@ -314,21 +265,9 @@ namespace TodoItems {
 
     @sharedRoute
     @post
-    op createUrlAttachment(
-      @header contentType: "application/json",
+    op createAttachment(
       @path itemId: TodoItem.id,
-      contents: TodoAttachment,
+      @body contents: TodoAttachment,
     ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-    @sharedRoute
-    @post
-    op createFileAttachment(
-      @header contentType: "multipart/form-data",
-      @path itemId: TodoItem.id,
-      contents: bytes,
-    ): WithStandardErrors<NoContentResponse | NotFoundResponse>;
-
-    // disabled: https://github.com/microsoft/typespec/issues/2925
-    // @delete op delete(@path itemId: TodoItem.id): OkResponse | NotFoundResponse;
   }
 }

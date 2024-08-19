@@ -3,20 +3,22 @@ import fastifyMultipart from "@fastify/multipart";
 import fastifyOpenapiGlue from "fastify-openapi-glue";
 import fastifySwagger from "@fastify/swagger";
 import fastifyReference from "@scalar/fastify-api-reference";
+
 import { Service } from "./service.js";
 const localFile = (fileName: string) =>
   new URL(fileName, import.meta.url).pathname;
-
 const serviceHandlers = new Service();
 const pluginOptions = {
-  specification: localFile("../tsp-output/@typespec/openapi3/openapi.yaml"),
+  specification: "./tsp-output/@typespec/openapi3/openapi.yaml",
   serviceHandlers,
 };
 
 const fastify = Fastify({
   logger: true,
 });
-fastify.register(fastifyMultipart);
+fastify.register(fastifyMultipart, {
+  attachFieldsToBody: true
+});
 fastify.register(fastifyOpenapiGlue, pluginOptions);
 fastify.register(fastifySwagger, {
   mode: "static",
@@ -69,6 +71,13 @@ fastify.setErrorHandler((error, req, res) => {
     return;
   }
 
+  if (error.code === "item-not-found") {
+    res.status(404).send({
+      code: error.code,
+      message: error.message
+   
+    });
+  }
   res.status(500).send({
     code: "server-error",
     message: error.message
