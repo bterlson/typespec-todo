@@ -238,7 +238,11 @@ namespace TodoItems {
     @statusCode statusCode: 422;
   }
 
-  @list op list(...PaginationControls): WithStandardErrors<TodoPage>;
+  model Page<T> {
+    @pageItems items: T[];
+  }
+
+  @list op list(...PaginationControls): WithStandardErrors<Page<TodoPage>>;
 
   @post
   op create(
@@ -261,7 +265,7 @@ namespace TodoItems {
   namespace Attachments {
     @list op list(
       @path itemId: TodoItem.id,
-    ): WithStandardErrors<TodoAttachment[] | NotFoundResponse>;
+    ): WithStandardErrors<Page<TodoAttachment> | NotFoundResponse>;
 
     @sharedRoute
     @post
