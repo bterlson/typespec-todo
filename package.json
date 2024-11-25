@@ -7,10 +7,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@azure-tools/typespec-csharp": "latest",
-    "@azure-tools/typespec-java": "latest",
-    "@azure-tools/typespec-python": "latest",
-    "@azure-tools/typespec-ts": "latest",
+    "@typespec/http-client-python": "latest",
     "@fastify/multipart": "^8.1.0",
     "@fastify/swagger": "^8.14.0",
     "@scalar/fastify-api-reference": "^1.17.6",

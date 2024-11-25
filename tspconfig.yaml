@@ -1,20 +1,5 @@
 emit:
-  - "@typespec/openapi3"
-  - "@typespec/json-schema"
-  - "@azure-tools/typespec-python"
-  - "@azure-tools/typespec-java"
-  - "@azure-tools/typespec-ts"
-  - "@azure-tools/typespec-csharp"
+  - "@typespec/http-client-python"
 options:
-  "@typespec/json-schema":
-    file-type: "json"
-  "@azure-tools/typespec-python":
-    emitter-output-dir: "{output-dir}/python"
-  "@azure-tools/typespec-java":
-    emitter-output-dir: "{output-dir}/java"
-    flavor: generic
-  "@azure-tools/typespec-csharp":
-    emitter-output-dir: "{output-dir}/csharp"
-  "@azure-tools/typespec-ts":
-    emitter-output-dir: "{project-root}/samples/typescript/generated-client"
-    generateMetadata: false
+  "@typespec/http-client-python":
+    emitter-output-dir: "{project-root}/output-python"
