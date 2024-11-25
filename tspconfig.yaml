@@ -2,7 +2,7 @@ emit:
   - "@typespec/openapi3"
   - "@typespec/json-schema"
   - "@azure-tools/typespec-python"
-  - "@azure-tools/typespec-java"
+  - "@typespec/http-client-java"
   - "@azure-tools/typespec-ts"
   - "@azure-tools/typespec-csharp"
 options:
@@ -10,9 +10,8 @@ options:
     file-type: "json"
   "@azure-tools/typespec-python":
     emitter-output-dir: "{output-dir}/python"
-  "@azure-tools/typespec-java":
+  "@typespec/http-client-java":
     emitter-output-dir: "{output-dir}/java"
-    flavor: generic
   "@azure-tools/typespec-csharp":
     emitter-output-dir: "{output-dir}/csharp"
   "@azure-tools/typespec-ts":

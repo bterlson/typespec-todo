@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@azure-tools/typespec-csharp": "latest",
-    "@azure-tools/typespec-java": "latest",
+    "@typespec/http-client-java": "latest",
     "@azure-tools/typespec-python": "latest",
     "@azure-tools/typespec-ts": "latest",
     "@fastify/multipart": "^8.1.0",
