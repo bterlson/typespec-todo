@@ -10,8 +10,6 @@ options:
     file-type: "json"
   "@azure-tools/typespec-python":
     emitter-output-dir: "{output-dir}/python"
-  "@typespec/http-client-java":
-    emitter-output-dir: "{output-dir}/java"
   "@azure-tools/typespec-csharp":
     emitter-output-dir: "{output-dir}/csharp"
   "@azure-tools/typespec-ts":
