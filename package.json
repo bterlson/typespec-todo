@@ -9,7 +9,7 @@
   "dependencies": {
     "@azure-tools/typespec-csharp": "latest",
     "@azure-tools/typespec-java": "latest",
-    "@azure-tools/typespec-python": "latest",
+    "@typespec/http-client-python": "latest",
     "@azure-tools/typespec-ts": "latest",
     "@fastify/multipart": "^8.1.0",
     "@fastify/swagger": "^8.14.0",
